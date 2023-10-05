@@ -1,16 +1,23 @@
-import Prompt from "@src/models/prompt";
-import { connectToDB } from "@src/utils/database";
+import { supabase } from 'src/lib/supabase.js';
 
-export const POST = async (request) => {
-    const { userId, prompt, tag } = await request.json();
-
+export const POST = async (req, res) => {
+    const { userId, prompt, tag } = await req.json();
+    // const token = req.headers.get('Authorization');
+    // console.log('token', token)
     try {
-        await connectToDB();
-        const newPrompt = new Prompt({ creator: userId, prompt, tag });
-
-        await newPrompt.save();
-        return new Response(JSON.stringify(newPrompt), { status: 201 })
+        // if (!token) {
+        //     return new Response("Unauthorized", { status: 401 });
+        // }
+        const { data, error } = await supabase
+            .from('Prompt')
+            .insert([{ userId, prompt, tag }]);
+        if (error) {
+            throw error;
+        }
+        return new Response(JSON.stringify(data), { status: 201 });
+        return
     } catch (error) {
+        console.error('Error occurred:', error);
         return new Response("Failed to create a new prompt", { status: 500 });
     }
-}
+};
