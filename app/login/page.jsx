@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react';
-import { supabase } from 'src/lib/supabase';
 import Messages from './messages';
 import { useRouter } from 'next/navigation';
+import { supabase } from 'src/lib/supabase';
 
 export default function Login() {
   const router = useRouter();
@@ -15,7 +15,7 @@ export default function Login() {
   const [message, setMessage] = useState(null);
 
   async function signInWithEmail(email, password) {
-    const { data, error } = await supabase.auth.signIn({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -23,23 +23,28 @@ export default function Login() {
     if (error) {
       setError(error.message);
     } else {
-      router.push('/')
+      router.push('/success')
     }
   }
 
-  async function signUpWithEmail(email, password) {
-    const { user, error } = await supabase.auth.signUp({
+  const signUpWithEmail = async (email, password) => {
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
     });
 
+    await supabase
+      .from('Users')
+      .insert([
+        { email }
+      ]);
+
     if (error) {
       setError(error.message);
     } else {
-      // Optionally, handle post-sign-up logic, e.g., send a welcome email, etc.
-      setMessage('Check your email for the verification link!');
+      router.push('/success')
     }
-  }
+  };
 
   function handleChange(e) {
     const { name, value } = e.target;

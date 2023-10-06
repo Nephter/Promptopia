@@ -3,36 +3,61 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { signIn, signOut, useSession, getProviders } from "next-auth/react";
+import { supabase } from "src/lib/supabase";
+import { useRouter } from 'next/navigation'
 
 const Nav = () => {
-  const { data: session } = useSession();
-
+  const router = useRouter();
   const [providers, setProviders] = useState(null);
   const [toggleDropdown, setToggleDropdown] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false)
 
   useEffect(() => {
-    (async () => {
-      const res = await getProviders();
-      setProviders(res);
-    })();
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (event === "SIGNED_IN") {
+          setLoggedIn(true);
+        } else if (event === "SIGNED_OUT") {
+          setLoggedIn(false);
+        }
+      }
+    );
+
   }, []);
 
-  return (
-    <span className="flex flex-row">
 
-      <Link
-        href="/login"
-        className="py-2 px-3 flex rounded-md no-underline bg-btn-background hover:bg-btn-background-hover"
-      >
-        Login
-      </Link>
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) console.log('Error logging out:', error);
+    else router.push('/');
+  };
+
+  return (
+    <span className="flex flex-row gap-4">
       <Link
         href="/create-prompt"
-        className="py-2 px-3 flex rounded-md no-underline bg-btn-background hover:bg-btn-background-hover"
+        className="
+        blue_gradient rounded-full border border-black  py-1.5 px-5  text-center text-sm  flex items-center justify-center hover:bg-blue-500  hover:border-blue-500 hover:shadow-lg hover:scale-105 hover:transition-all duration-300 ease-in-out transition-all"
       >
         Create Prompt
       </Link>
+
+      {!loggedIn ? (
+        <Link
+          href="/login"
+          className="black_btn"
+        >
+          Login
+        </Link>
+      ) : (
+        <button
+          onClick={handleLogout}
+          className="black_btn"
+        >
+          Logout
+        </button>
+      )}
+
     </span>
 
     // <nav className='flex-between w-full mb-16 pt-3'>

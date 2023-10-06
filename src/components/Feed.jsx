@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 
 import PromptCard from "./PromptCard";
+import { supabase } from "../lib/supabase";
 
 const PromptCardList = ({ data, handleTagClick }) => {
   return (
@@ -19,6 +20,8 @@ const PromptCardList = ({ data, handleTagClick }) => {
 };
 
 const Feed = () => {
+
+
   // const [allPosts, setAllPosts] = useState([]);
 
   // // Search states
@@ -90,7 +93,7 @@ const Feed = () => {
     //     <PromptCardList data={allPosts} handleTagClick={handleTagClick} />
     //   )}
     // </section>
-    <>feed</>
+    <>FIX THE FEED COMPONENT NEXT!!!!!!!!!!!!!!!!!!!!!</>
   );
 };
 

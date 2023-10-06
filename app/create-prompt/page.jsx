@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "src/lib/supabase";
 import Form from "src/components/Form";
+import axios from 'axios'
 
 const CreatePrompt = () => {
   const router = useRouter();
@@ -14,27 +15,23 @@ const CreatePrompt = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const { data: { session }, } = await supabase.auth.getSession()
-      const response = await fetch("/api/prompt/new", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `${session?.access_token}`
-        },
-        body: JSON.stringify({
-          prompt: post.prompt,
-          userId: session?.user?.id,
-          tag: post.tag,
-        }),
-      });
+      const { data: { session } } = await supabase.auth.getSession()
 
-      if (response.ok) {
-        router.push("/");
+      const response = await axios.post(
+        '/api/prompt/new',
+        JSON.stringify({
+          userId: session?.user?.id,
+          prompt: post.prompt,
+          tag: post.tag
+        }));
+
+      if (response.status === 201) {
+        setIsSubmitting(false);
+        router.push('/')
       }
+
     } catch (error) {
-      console.log(error);
-    } finally {
-      setIsSubmitting(false);
+      console.log(error)
     }
   };
 

@@ -32,9 +32,6 @@ const RootLayout = ({ children }) => (
         </div>
 
         <main className='app'>
-          <Link href='/create-prompt'>
-            <p className='create-prompt'>Create Prompt</p>
-          </Link>
           {children}
         </main>
 
