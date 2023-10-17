@@ -15,29 +15,17 @@ const Nav = () => {
   const [toggleDropdown, setToggleDropdown] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false)
 
-  // const autoSignIn = async () => {
-  //   const { data } = await supabase.auth.getSession().session.user
-  //   console.log('user', data)
-  // }
-  // const autoSignIn = async () => {
-  //   await supabase.auth.getSession().then((data) => {
-  //     supabase.auth.setSession({
-  //       access_token: data.session?.access_token,
-  //       refresh_token: data.session?.refresh_token
-  //     })
-  //   })
-  // }
   const autoSignIn = async () => {
     const data = await supabase.auth.getSession()
-    // console.log('data', data)
-    const { data: sessionData, error } = await supabase.auth.setSession({
-      access_token: data.session?.access_token,
-      refresh_token: data.session?.refresh_token
-    })
-    // console.log('sessionData', sessionData)
+    if (data) {
+      setLoggedIn(true)
+    } else {
+      setLoggedIn(false)
+    }
   }
-
-  autoSignIn()
+  useEffect(() => {
+    autoSignIn()
+  }, []);
 
   useEffect(() => {
     supabase.auth.onAuthStateChange(
