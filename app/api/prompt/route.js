@@ -1,14 +1,19 @@
 import Prompt from "src/models/prompt";
-import { connectToDB } from "src/utils/database";
 
 export const GET = async (request) => {
+    console.log('GET /api/prompt/all')
     try {
-        await connectToDB()
+        const { data, error } = await supabase
+            .from('Prompt')
+            .select('*')
+        if (error) {
+            throw error;
+        }
 
-        const prompts = await Prompt.find({}).populate('creator')
+        console.log('data', data)
 
-        return new Response(JSON.stringify(prompts), { status: 200 })
+        return new Response(JSON.stringify(data), { status: 201 });
     } catch (error) {
         return new Response("Failed to fetch all prompts", { status: 500 })
     }
-} 
+}

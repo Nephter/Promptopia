@@ -4,6 +4,8 @@ import Provider from "src/components/Provider";
 import Link from "next/link";
 import Image from "next/image";
 import Nav from "src/components/Nav";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 export const metadata = {
   title: "Promptopia",
@@ -32,6 +34,19 @@ const RootLayout = ({ children }) => (
         </div>
 
         <main className='app'>
+          <ToastContainer
+            position="top-center"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="dark"
+            zIndex="99999"
+          />
           {children}
         </main>
 

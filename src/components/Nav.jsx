@@ -5,6 +5,9 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { supabase } from "src/lib/supabase";
 import { useRouter } from 'next/navigation'
+import { toast } from 'react-toastify';
+
+// use supabase.auth.getSession() "Retrieve a session", use supabase.auth.getUser() to "Retrieve a User"
 
 const Nav = () => {
   const router = useRouter();
@@ -12,8 +15,32 @@ const Nav = () => {
   const [toggleDropdown, setToggleDropdown] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false)
 
+  // const autoSignIn = async () => {
+  //   const { data } = await supabase.auth.getSession().session.user
+  //   console.log('user', data)
+  // }
+  // const autoSignIn = async () => {
+  //   await supabase.auth.getSession().then((data) => {
+  //     supabase.auth.setSession({
+  //       access_token: data.session?.access_token,
+  //       refresh_token: data.session?.refresh_token
+  //     })
+  //   })
+  // }
+  const autoSignIn = async () => {
+    const data = await supabase.auth.getSession()
+    // console.log('data', data)
+    const { data: sessionData, error } = await supabase.auth.setSession({
+      access_token: data.session?.access_token,
+      refresh_token: data.session?.refresh_token
+    })
+    // console.log('sessionData', sessionData)
+  }
+
+  autoSignIn()
+
   useEffect(() => {
-    const { data: authListener } = supabase.auth.onAuthStateChange(
+    supabase.auth.onAuthStateChange(
       (event, session) => {
         if (event === "SIGNED_IN") {
           setLoggedIn(true);
@@ -22,9 +49,7 @@ const Nav = () => {
         }
       }
     );
-
   }, []);
-
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -32,16 +57,32 @@ const Nav = () => {
     else router.push('/');
   };
 
+  const handleCreatePrompt = () => {
+    if (loggedIn) {
+      router.push('/create-prompt')
+    } else {
+      toast('Login to create a prompt!', {
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+      router.push('/login')
+    }
+  }
+
   return (
     <span className="flex flex-row gap-4">
-      <Link
-        href="/create-prompt"
+      <button
+        onClick={handleCreatePrompt}
         className="
         blue_gradient rounded-full border border-black  py-1.5 px-5  text-center text-sm  flex items-center justify-center hover:bg-blue-500  hover:border-blue-500 hover:shadow-lg hover:scale-105 hover:transition-all duration-300 ease-in-out transition-all"
       >
         Create Prompt
-      </Link>
-
+      </button>
       {!loggedIn ? (
         <Link
           href="/login"

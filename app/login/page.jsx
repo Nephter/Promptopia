@@ -19,7 +19,6 @@ export default function Login() {
       email,
       password,
     });
-
     if (error) {
       setError(error.message);
     } else {
