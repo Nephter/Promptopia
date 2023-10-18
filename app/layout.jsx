@@ -1,11 +1,11 @@
 import "src/styles/globals.css";
 
-import Provider from "src/components/Provider";
-import Link from "next/link";
 import Image from "next/image";
-import Nav from "src/components/Nav";
+import Link from "next/link";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import Nav from "src/components/Nav";
+import Provider from "src/components/Provider";
 
 export const metadata = {
   title: "Promptopia",
@@ -29,10 +29,13 @@ const RootLayout = ({ children }) => (
           </Link>
           <Nav />
         </nav>
+
         <div className='main'>
           <div className='gradient' />
         </div>
-
+        {/* <Suspense fallback={null}>
+          <NavigationEvents />
+        </Suspense> */}
         <main className='app'>
           <ToastContainer
             position="top-center"

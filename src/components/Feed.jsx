@@ -1,17 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
-
+import axios from "axios";
+import { useEffect, useState } from "react";
 import PromptCard from "./PromptCard";
-import { supabase } from "../lib/supabase";
-import axios from 'axios'
+
 
 const PromptCardList = ({ data, handleTagClick }) => {
+
   return (
     <div className='mt-16 prompt_layout'>
       {data.map((post) => (
         <PromptCard
-          key={post._id}
+          key={post.id}
           post={post}
           handleTagClick={handleTagClick}
         />
@@ -21,46 +21,19 @@ const PromptCardList = ({ data, handleTagClick }) => {
 };
 
 const Feed = () => {
-  const [allPosts, setAllPosts] = useState([]);
-  const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState("");
   const [searchTimeout, setSearchTimeout] = useState(null);
   const [searchedResults, setSearchedResults] = useState([]);
-
+  const [allPosts, setAllPosts] = useState([]);
 
   const fetchPosts = async () => {
-    console.log('1')
     const response = await axios.get("/api/prompt");
-    console.log('2')
-    const data = await response.json();
-    console.log('3')
-    setAllPosts(data);
+    setAllPosts(response.data);
   };
 
   useEffect(() => {
     fetchPosts();
   }, []);
-
-
-  // const [allPosts, setAllPosts] = useState([]);
-
-  // // Search states
-
-
-  // const fetchPosts = async () => {
-  //   const response = await fetch("/api/prompt");
-  //   const data = await response.json();
-
-  //   setAllPosts(data);
-  // };
-
-  // useEffect(() => {
-  //   fetchPosts();
-  // }, []);
-
-  useEffect(() => {
-    console.log('allPosts', allPosts)
-  }, [allPosts]);
 
   const filterPrompts = (searchtext) => {
     const regex = new RegExp(searchtext, "i"); // 'i' flag for case-insensitive search
@@ -105,22 +78,18 @@ const Feed = () => {
         />
       </form>
 
-      {/* All Prompts */}
       {searchText ? (
-        <>searchtext</>
-      ) : (
-        <>no text</>
-      )}
-      {/* {searchText ? (
         <PromptCardList
           data={searchedResults}
           handleTagClick={handleTagClick}
         />
       ) : (
-        <PromptCardList data={allPosts} handleTagClick={handleTagClick} />
-      )} */}
+        <PromptCardList
+          data={allPosts}
+          handleTagClick={handleTagClick}
+        />
+      )}
     </section>
-
   );
 };
 

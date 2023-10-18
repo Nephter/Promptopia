@@ -1,13 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from "react";
-import { supabase } from "src/lib/supabase";
-import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify';
-
-// use supabase.auth.getSession() "Retrieve a session", use supabase.auth.getUser() to "Retrieve a User"
+import { supabase } from "src/lib/supabase";
 
 const Nav = () => {
   const router = useRouter();
@@ -23,9 +20,6 @@ const Nav = () => {
       setLoggedIn(false)
     }
   }
-  useEffect(() => {
-    autoSignIn()
-  }, []);
 
   useEffect(() => {
     supabase.auth.onAuthStateChange(
@@ -37,6 +31,9 @@ const Nav = () => {
         }
       }
     );
+
+    autoSignIn()
+
   }, []);
 
   const handleLogout = async () => {
