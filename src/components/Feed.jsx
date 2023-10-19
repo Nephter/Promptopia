@@ -3,10 +3,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import PromptCard from "./PromptCard";
+import { supabase } from 'src/lib/supabase'
 
 
 const PromptCardList = ({ data, handleTagClick }) => {
-
   return (
     <div className='mt-16 prompt_layout'>
       {data.map((post) => (
@@ -26,6 +26,11 @@ const Feed = () => {
   const [searchedResults, setSearchedResults] = useState([]);
   const [allPosts, setAllPosts] = useState([]);
 
+  // const getSessionInfo = async () => {
+  //   const { data } = await supabase.auth.getUser()
+  //   console.log(data)
+  // }
+
   const fetchPosts = async () => {
     const response = await axios.get("/api/prompt");
     setAllPosts(response.data);
@@ -33,7 +38,13 @@ const Feed = () => {
 
   useEffect(() => {
     fetchPosts();
+    // getSessionInfo()
   }, []);
+
+
+  // const fetchAvatars = async () => {
+  //   const response = await axios.get(`/api/prompt${}`)
+  // }
 
   const filterPrompts = (searchtext) => {
     const regex = new RegExp(searchtext, "i"); // 'i' flag for case-insensitive search
@@ -49,7 +60,6 @@ const Feed = () => {
     clearTimeout(searchTimeout);
     setSearchText(e.target.value);
 
-    // debounce method
     setSearchTimeout(
       setTimeout(() => {
         const searchResult = filterPrompts(e.target.value);

@@ -11,13 +11,14 @@ const CreatePrompt = () => {
   const [submitting, setIsSubmitting] = useState(false);
   const [post, setPost] = useState({ prompt: "", tag: "" });
 
-
   const createPrompt = async (e) => {
     e.preventDefault();
-    const { data: { session } } = await supabase.auth.getSession()
-    setIsSubmitting(true);
-    try {
 
+    const { data: { session } } = await supabase.auth.getSession()
+
+    setIsSubmitting(true);
+
+    try {
       const response = await axios.post(
         '/api/prompt/new',
         JSON.stringify({
@@ -30,7 +31,6 @@ const CreatePrompt = () => {
         setIsSubmitting(false);
         router.push('/')
       }
-
     } catch (error) {
       console.log(error)
     }
